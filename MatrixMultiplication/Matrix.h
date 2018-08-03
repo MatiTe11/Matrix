@@ -1,12 +1,19 @@
 #pragma once
+#ifndef _MATRIX_H_
+#define _MATRIX_H_
+template < class T > // dodaj ograniczenia
 class Matrix
 {
 private:
-	int size;
-	double** A;
+	int sizeX, sizeY;
+	T** values;
 
 public:
-	Matrix();
+	Matrix(int sizeX, int sizeY);
 	~Matrix();
+	T getvalue();
+
 };
+//#include "Matrix.cpp"
+#endif
 

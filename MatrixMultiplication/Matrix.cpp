@@ -1,12 +1,21 @@
 #include "Matrix.h"
 
-
-
-Matrix::Matrix()
+template < class T >
+Matrix<T>::Matrix(int sizeX, int sizeY)
 {
+	this->sizeX = sizeX;
+	this->sizeY = sizeY;
+
 }
 
-
-Matrix::~Matrix()
+template < class T >
+Matrix<T>::~Matrix()
 {
+	//delete A;
+}
+
+template < class T >
+T Matrix<T>::getvalue()
+{
+	return 7;
 }
