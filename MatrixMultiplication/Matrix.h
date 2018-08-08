@@ -8,34 +8,34 @@ template < class T >
 class Matrix
 {
 	private:
-		int sizeX, sizeY;
+		int sizeCollumns, sizeRows;
 		T** values;
 
 	public:
-		Matrix(int sizeX, int sizeY)
+		Matrix(int rows, int collumns)
 		{
-			this->sizeX = sizeX;
-			this->sizeY = sizeY;
-			values = new T*[sizeX];
-			for (int i = 0; i < sizeX; i++)
+			this->sizeCollumns = collumns;
+			this->sizeRows = rows;
+			values = new T*[rows];
+			for (int i = 0; i < rows; i++)
 			{
-				values[i] = new T[sizeY];
+				values[i] = new T[collumns];
 			}
 		}
 
-		Matrix(int sizeX, int sizeY, T** vals)
+		Matrix(int rows, int collumns, T** vals)
 		{
-			this->sizeX = sizeX;
-			this->sizeY = sizeY;
-			values = new T*[sizeX];
-			for (int i = 0; i < sizeX; i++)
+			this->sizeCollumns = collumns;
+			this->sizeRows = rows;
+			values = new T*[rows];
+			for (int i = 0; i < rows; i++)
 			{
-				values[i] = new T[sizeY];
+				values[i] = new T[collumns];
 			}
 
-			for (int i = 0; i < sizeX; i++)
+			for (int i = 0; i < rows; i++)
 			{
-				for (int j = 0; j < sizeY; j++)
+				for (int j = 0; j < collumns; j++)
 				{
 					values[i][j] = vals[i][j];
 				}
@@ -44,18 +44,18 @@ class Matrix
 
 		Matrix(const Matrix<T> &m)
 		{
-			this->sizeX = m.getSizeX();
-			this->sizeY = m.getSizeY();
+			this->sizeCollumns = m.getSizeCollumns();
+			this->sizeRows = m.getSizeRows();
 
-			values = new T*[sizeX];
-			for (int i = 0; i < sizeX; i++)
+			values = new T*[sizeCollumns];
+			for (int i = 0; i < sizeCollumns; i++)
 			{
-				values[i] = new T[sizeY];
+				values[i] = new T[sizeRows];
 			}
 
-			for (int i = 0; i < sizeX; i++)
+			for (int i = 0; i < sizeCollumns; i++)
 			{
-				for (int j = 0; j < sizeY; j++)
+				for (int j = 0; j < sizeRows; j++)
 				{
 					values[i][j] = m.getValue(j, i);
 				}
@@ -64,55 +64,56 @@ class Matrix
 
 		~Matrix()
 		{
-			for (int i = 0; i < sizeX; i++)
+			for (int i = 0; i < sizeCollumns; i++)
 			{
 				delete[] values[i];
 			}
 			delete[] values;
 		}
 
-		int getSizeX() const
+		int getSizeCollumns() const
 		{
-			return sizeX;
+			return sizeCollumns;
 		}
 
-		int getSizeY() const
+		int getSizeRows() const
 		{
-			return sizeY;
+			return sizeRows;
 		}
 
 		T getValue(int row, int collumn) const
 		{
-			return values[collumn][row];
+			return values[row][collumn];
 		}
 
 		void setValue(int row, int collumn, T value_) 
 		{
-			values[collumn][row] = value_;
+			values[row][collumn] = value_;
 		}
 
-		T dotProduct(Matrix<T> second, int row, int collumn)
+		T dotProduct(const Matrix<T> &second, int row, int collumn)
 		{
 			T result = 0;
-			for (int i = 0; i < second.getSizeY(); i++)
+			auto rows = second.getSizeRows();
+
+			for (int i = 0; i < rows; i++)
 			{
-				result += this->values[i][row] * second.getValue(i, collumn);
+				result += (getValue(row, i) * second.getValue(i, collumn));
 			}
 			return result;
 		}
 
 		Matrix<T> operator* (Matrix<T> &right)
 		{
-			if (this->sizeX != right.getSizeY())
+			if (getSizeCollumns() != right.getSizeRows())
 				throw MatrixException();
 
-			Matrix<T> solution(right.getSizeX, this->sizeY);
+			Matrix<T> solution(getSizeRows(), right.getSizeCollumns());
 
-			for (int i = 0; i < sizeX; i++)
+			for (int i = 0; i < right.getSizeCollumns(); i++)
 			{
-				for (int j = 0; j < sizeY; j++)
+				for (int j = 0; j < getSizeRows(); j++)
 				{
-					//solution[i][j] = dotProduct(right, j, i);
 					solution.setValue(j, i, dotProduct(right, j, i));
 				}
 			}
@@ -122,14 +123,14 @@ class Matrix
 
 		Matrix<T> operator+ (Matrix<T> &right)
 		{
-			if (this->sizeX != right.getSizeX() && this->sizeY != right.getSizeY())
+			if (this->sizeCollumns != right.getSizeCollumns() && this->sizeRows != right.getSizeRows())
 				throw MatrixException();
 
-			Matrix<T> solution(right.getSizeX(), this->sizeY);
+			Matrix<T> solution(right.getSizeCollumns(), this->sizeRows);
 
-			for (int i = 0; i < sizeX; i++)
+			for (int i = 0; i < sizeCollumns; i++)
 			{
-				for (int j = 0; j < sizeY; j++)
+				for (int j = 0; j < sizeRows; j++)
 				{
 					//solution[i][j] = values[i][j] + right.getValue(j, i);
 					solution.setValue(j, i, (values[i][j] + right.getValue(j, i)));
@@ -140,11 +141,11 @@ class Matrix
 
 		void print()
 		{
-			for (int i = 0; i < sizeY; i++)
+			for (int i = 0; i < sizeRows; i++)
 			{
-				for (int j = 0; j < sizeX; j++)
+				for (int j = 0; j < sizeCollumns; j++)
 				{
-					std::cout << values[j][i] << " ";
+					std::cout << values[i][j] << " ";
 				}
 				std::cout << std::endl;
 			}

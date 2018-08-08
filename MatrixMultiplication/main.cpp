@@ -8,32 +8,37 @@ int main()
 	int one[3][2] = { 1,2,
 					1,2,
 					1,2 };
-	int two[3][2] = { 3,4,
-					3, 4,
-					3, 4 };
+	int two[2][3] = { 3,3,3,
+					4,4,4};
 	int** on, **tw;
 	on = new int*[3];
-	tw = new int*[3];
+	tw = new int*[2];
 	for (size_t i = 0; i < 3; i++)
 	{
 		on[i] = new int[2];
-		tw[i] = new int[2];
+		if (i < 2)
+			tw[i] = new int[3];
 	}
 	for (int i = 0; i < 3; i++)
 	{
 		for (int j = 0; j < 2; j++)
 		{
 			on[i][j] = one[i][j];
+		}
+	}
+	for (int i = 0; i < 2; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
 			tw[i][j] = two[i][j];
 		}
 	}
-	//std::cout << on[2][0];
 
 	Matrix<int> o(3,2,on);
-	Matrix<int> t(3, 2, tw);
-	Matrix<int> l(3, 2);
+	Matrix<int> t(2, 3, tw);
 
-	auto x = o + t;
+
+	auto x = o * t;
 	x.print();
-	//t.print();
+	
 }
