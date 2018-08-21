@@ -1,44 +1,23 @@
-///vector of strings containing equations is converted int Matrix objects, which then can be multiplied using operator* (Jacobi parallel)
+///vector of strings containing equations is converted into Matrix objects, which then can be multiplied using operator* (Jacobi parallel)
 #include "Matrix.h"
 #include <iostream>
-//#include "Matrix.cpp"
+#include <string>
 
 int main()
 {
-	int one[3][2] = { 1,2,
-					1,2,
-					1,2 };
-	int two[2][3] = { 3,3,3,
-					4,4,4};
-	int** on, **tw;
-	on = new int*[3];
-	tw = new int*[2];
-	for (size_t i = 0; i < 3; i++)
+	try
 	{
-		on[i] = new int[2];
-		if (i < 2)
-			tw[i] = new int[3];
+		Matrix<int> o("A.txt");
+		Matrix<int> t("B.txt");
+
+		auto x = o * t;
+		x.print();
 	}
-	for (int i = 0; i < 3; i++)
+	catch (MatrixException e)
 	{
-		for (int j = 0; j < 2; j++)
-		{
-			on[i][j] = one[i][j];
-		}
+		std::cout << e.getErrMsg();
 	}
-	for (int i = 0; i < 2; i++)
-	{
-		for (int j = 0; j < 3; j++)
-		{
-			tw[i][j] = two[i][j];
-		}
-	}
-
-	Matrix<int> o(3,2,on);
-	Matrix<int> t(2, 3, tw);
-
-
-	auto x = o * t;
-	x.print();
 	
+	char p;
+	std::cin >> p;
 }

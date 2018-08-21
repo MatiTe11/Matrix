@@ -3,6 +3,7 @@
 #define _MATRIX_H_
 #include "MatrixException.h"
 #include <iostream>
+#include <fstream>
 
 template < class T > 
 class Matrix
@@ -38,6 +39,38 @@ class Matrix
 				for (int j = 0; j < collumns; j++)
 				{
 					values[i][j] = vals[i][j];
+				}
+			}
+		}
+
+		Matrix(std::string source)
+		{
+			std::fstream file;
+			file.open(source, std::ios::in);
+			if (!file.good())
+			{
+				std::cout << "jlfe";
+				throw MatrixException("bad file");
+			}
+
+			//T number;
+			int rows, collumns;
+			file >> rows;
+			file >> collumns;
+
+			this->sizeCollumns = collumns;
+			this->sizeRows = rows;
+			values = new T*[rows];
+			for (int i = 0; i < rows; i++)
+			{
+				values[i] = new T[collumns];
+			}
+
+			for (int i = 0; i < rows; i++)
+			{
+				for (int j = 0; j < collumns; j++)
+				{
+					file >> values[i][j];
 				}
 			}
 		}
@@ -106,7 +139,7 @@ class Matrix
 		Matrix<T> operator* (Matrix<T> &right)
 		{
 			if (getSizeCollumns() != right.getSizeRows())
-				throw MatrixException();
+				throw MatrixException("Bad dimentions");
 
 			Matrix<T> solution(getSizeRows(), right.getSizeCollumns());
 
@@ -134,6 +167,24 @@ class Matrix
 				{
 					//solution[i][j] = values[i][j] + right.getValue(j, i);
 					solution.setValue(j, i, (values[i][j] + right.getValue(j, i)));
+				}
+			}
+			return solution;
+		}
+
+		Matrix<T> operator- (Matrix<T> &right)
+		{
+			if (this->sizeCollumns != right.getSizeCollumns() && this->sizeRows != right.getSizeRows())
+				throw MatrixException();
+
+			Matrix<T> solution(right.getSizeCollumns(), this->sizeRows);
+
+			for (int i = 0; i < sizeCollumns; i++)
+			{
+				for (int j = 0; j < sizeRows; j++)
+				{
+					//solution[i][j] = values[i][j] + right.getValue(j, i);
+					solution.setValue(j, i, (values[i][j] - right.getValue(j, i)));
 				}
 			}
 			return solution;
