@@ -73,6 +73,7 @@ class Matrix
 					file >> values[i][j];
 				}
 			}
+			file.close();
 		}
 
 		Matrix(const Matrix<T> &m)
